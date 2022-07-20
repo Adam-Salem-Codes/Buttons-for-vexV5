@@ -1,12 +1,17 @@
 
 #include "vex.h"
+
 #include "button.h"
 
 typedef char *string;
 square s;
 bool clicked = false;
 bool isDisabled = false;
+bool hasSender = false;
 void (*functionpointer)(void);
+void (*senderFunctionPointer)(char *);
+
+string senderArgs;
 
 bool checkCollsion(point p, square s)
 {
@@ -38,9 +43,13 @@ int button::CheckCollisions()   {
       waitUntil(Brain.Screen.pressing());
       point p = {Brain.Screen.xPosition(),Brain.Screen.yPosition()};
       if (checkCollsion(p, this->s) && isDisabled != true) {
-
-         this->functionpointer();
-         return EXIT_SUCCESS;
+          if(hasSender)
+          {
+            this -> senderFunctionPointer(senderArgs);
+            return EXIT_SUCCESS;
+          }
+          this -> functionpointer();
+          return EXIT_SUCCESS;
       }
     }
   while(true) {
@@ -56,11 +65,27 @@ void button::setup(int x, int y, int width, int height, string text, void (*ptr)
     s = {x, y, width, height};
     int tw = vexDisplayStringWidthGet(text);
     int th = vexDisplayStringHeightGet(text);
-    int tl = s.x + (s.w / 2) - (tw/2);
+    int tl = s.x + (s.w / 2) - (tw / 2);
     int tt = s.y + (s.h / 2) - (th / 2);
     Brain.Screen.printAt(tl, tt, false, text);
     functionpointer = ptr;
     return;
 }
+void button::setup(int x, int y, int width, int height, string text, void (*ptr)(char *), char *sender)
+{
+    Brain.Screen.drawRectangle(x, y, width, height);
+    s = {x, y, width, height};
+    int tw = vexDisplayStringWidthGet(text);
+    int th = vexDisplayStringHeightGet(text);
+    int tl = s.x + (s.w / 2) - (tw / 2);
+    int tt = s.y + (s.h / 2) - (th / 2);
+    Brain.Screen.printAt(tl, tt, false, text);
+    senderFunctionPointer = ptr;
+    hasSender = true;
+    senderArgs = sender;
+    return;
+}
+
+void button::setup(square s, string text,  void (*ptr)(char *), char *sender) {button::setup(s.x, s.y, s.w, s.h, text, ptr, sender);}
 
 void button::setup(square s, string text, void (*ptr)(void)) {button::setup(s.x, s.y, s.w, s.h, text, ptr);}
