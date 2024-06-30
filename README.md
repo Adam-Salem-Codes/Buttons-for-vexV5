@@ -127,10 +127,7 @@ int main() {
 
 ![After Click](https://user-images.githubusercontent.com/84548368/179364362-744eea57-ebf9-480f-bbdf-d173f1135149.jpg)
 
-## Thank you for reading through this. 😃
 
-### Credits 💳
-This github page and 100% of the code is managed and written by Void (me).
-[Void's github](https://github.com/ItzVoidYT)
+# This is deprecated and no longer supported
 
----
+You should probably switch to using PROS and LVGL for a better experience.
